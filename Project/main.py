@@ -1,3 +1,4 @@
+import tkinter
 from tkinter import *
 from tkinter import messagebox
 
@@ -9,17 +10,28 @@ class TooLongExpressionException(Exception):
 class Calculator(object):
 
     def __init__(self):
+        self.background_colour = "white"
+        self.font_colour = "black"
+
         self.window = Tk()
-        self.window.geometry("1360x560")
+        self.window.geometry("1360x600")
         self.window.title("Kalkulator")
-        self.window_setup()
+
         self.expression = ""
         self.previous_expression = ""
         self.equation = ""
+        self.checkbox_value = tkinter.BooleanVar()
+        self.checkbox_value.set(False)
+
+        self.checkbox = Checkbutton(text="Bright/Dark mode", font=("Helvetica", 20), variable=self.checkbox_value)  # ogarnąć czemu się nie zaznacza
+        self.window_setup()
         mainloop()
 
     def window_setup(self):
-        self.entry_box = Text(width=31, height=2, spacing1=10, font=("Helvetica", 60), state="disabled")
+        self.window["bg"] = self.background_colour
+
+        self.entry_box = Text(width=31, height=2, spacing1=10, font=("Helvetica", 60), state="disabled",
+                              bg=self.background_colour, fg=self.font_colour)
         self.entry_box.grid(row=0, column=0, columnspan=5, sticky=W)
 
         self.button_1 = self.make_button("1", 1, 0, lambda x="1": self.character_button_click(x))
@@ -46,12 +58,17 @@ class Calculator(object):
         self.button_bracket_left = self.make_button("(", 4, 3, lambda x="(": self.character_button_click(x))
         self.button_bracket_right = self.make_button(")", 4, 4, lambda x=")": self.character_button_click(x))
 
+        self.checkbox["bg"] = self.background_colour
+        self.checkbox["fg"] = self.font_colour
+        self.checkbox["command"] = self.style_change
+        self.checkbox.grid(row=5, column=0, sticky=W)
 
-    @staticmethod
-    def make_button(button_text, button_row, button_column, button_action):
+    def make_button(self, button_text, button_row, button_column, button_action):
         button = Button(width=10, height=1, bg="white", fg="black", text=button_text, font=("Helvetica", 34))
         button.grid(row=button_row, column=button_column, sticky=W)
         button["command"] = button_action
+        button["bg"] = self.background_colour
+        button["fg"] = self.font_colour
         return button_action
 
     def character_button_click(self, text):
@@ -105,6 +122,15 @@ class Calculator(object):
         self.entry_box.delete(0.0, "end")
         self.entry_box["state"] = "disabled"
         message_box = messagebox.showerror("Błąd", message)
+
+    def style_change(self):  # ogarnąć czemu się nie zaznacza
+        if self.checkbox_value.get():
+            self.background_colour = "black"
+            self.font_colour = "white"
+        else:
+            self.background_colour = "white"
+            self.font_colour = "black"
+        self.window_setup()
 
 
 def main():
