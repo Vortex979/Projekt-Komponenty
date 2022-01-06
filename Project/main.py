@@ -65,7 +65,7 @@ class Calculator(object):
         # except:
         #     message_box = messagebox.showerror("Błąd", "Twoje równanie jest za długie!")
 
-    def equation_button_click(self):  # dodać zabezpiecznie przed pustymi stringami
+    def equation_button_click(self):
         try:
             self.equation = eval(self.expression)
             if str(self.equation) == "()":
