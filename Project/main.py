@@ -1,8 +1,8 @@
 from tkinter import *
 from tkinter import messagebox
 
-# TODO: po kliknięciu równa się żeby ostatnie działanie dawało ???
-# TODO: i żeby można było pobierać działania z historii
+# TODO: po kliknięciu równa się żeby ostatnie działanie dawało ??? - ciężka sprawa
+# TODO: i żeby można było pobierać działania z historii - done :D
 
 
 class TooLongExpressionException(Exception):
@@ -66,29 +66,33 @@ class Calculator(object):
         self.make_button("(", 5, 3, lambda x="(": self.character_button_click(x))
         self.make_button(")", 5, 4, lambda x=")": self.character_button_click(x))
 
-        self.button_clearHistory = Button(width=9, height=2, bg=self.background_colour, fg=self.font_colour,
-                                          text="History\nclear", font=("Helvetica", 12), command=self.clear_history)
-        self.button_clearHistory.grid(row=6, column=3, sticky=W)
-        self.button_showHistory = Button(width=9, height=2, bg=self.background_colour, fg=self.font_colour,
-                                         text="Show/Hide \nhistory", font=("Helvetica", 12), command=self.show_history)
-        self.button_showHistory.grid(row=6, column=4, sticky=W)
-
         self.checkbox["bg"] = self.background_colour
         self.checkbox["fg"] = self.font_colour
         self.checkbox["command"] = self.style_change
         self.checkbox.grid(row=6, column=0, sticky=W)
+
+        self.button_clearHistory = Button(width=9, height=2, bg=self.background_colour, fg=self.font_colour,
+                                          text="Clear\nhistory", font=("Helvetica", 12), command=self.clear_history)
+        self.button_clearHistory.grid(row=6, column=3, sticky=W)
+        self.button_showHistory = Button(width=9, height=2, bg=self.background_colour, fg=self.font_colour,
+                                         text="Show/Hide \nhistory", font=("Helvetica", 12), command=self.show_history)
+        self.button_showHistory.grid(row=6, column=4, sticky=W)
+        self.button_insert_History = Button(width=9, height=2, bg=self.background_colour, fg=self.font_colour,
+                                            text="Insert\nfrom history", font=("Helvetica", 12), command=self.insert_history)
+        self.button_insert_History.grid(row=6, column=2, sticky=W)
+
 
         self.label1 = Label(text="Operations history: ", font=("Helvetica", 16),
                             bg=self.background_colour, fg=self.font_colour)
         self.label1.grid(row=0, column=6, sticky=W)
 
         self.history_listbox = Listbox(width=20, height=8, bg=self.background_colour,
-                                       fg=self.font_colour, font=("Helvetica", 20))
+                                       fg=self.font_colour, font=("Helvetica", 20), selectmode=SINGLE)
         self.history_listbox.grid(row=1, rowspan=5, column=6, columnspan=5, sticky=W)
 
-        self.history_scroll = Scale(length=270, sliderlength=50, showvalue=0)
-        self.history_scroll.grid(row=1, rowspan=5, column=11, columnspan=5, sticky=W)
-        self.history_scroll.config(command=self.history_listbox.yview)
+        self.history_scroll_Y = Scale(length=270, sliderlength=50, showvalue=0)
+        self.history_scroll_Y.grid(row=1, rowspan=5, column=11, columnspan=5, sticky=W)
+        self.history_scroll_Y.config(command=self.history_listbox.yview)
 
     def make_button(self, button_text, button_row, button_column, button_action):
         button = Button(width=5, height=1, bg=self.background_colour, fg=self.font_colour,
@@ -120,8 +124,7 @@ class Calculator(object):
             self.previous_expression = self.expression
             self.modify_entry_box(self.previous_expression)
 
-            equation_to_history = self.expression + "=" + str(self.equation)
-            self.add_to_history(equation_to_history)
+            self.add_to_history(self.expression)
 
             self.entry_box["state"] = "normal"
             self.entry_box.insert("end", "\n" + str(self.equation))
@@ -193,6 +196,11 @@ class Calculator(object):
         else:
             self.window.geometry("465x395")
 
+    def insert_history(self):
+        self.expression = self.history_listbox.get(ACTIVE)
+        if self.expression == "":
+            return
+        self.equation_button_click()
 
 def main():
     Calc = Calculator()
