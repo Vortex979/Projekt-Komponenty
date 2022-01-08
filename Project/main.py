@@ -16,7 +16,7 @@ class Calculator(object):
         self.font_colour = "black"
 
         self.window = Tk()
-        self.window.geometry("800x400")
+        self.window.geometry("465x395")
         self.window.resizable(0, 0)
         self.window.title("Kalkulator")
 
@@ -70,7 +70,7 @@ class Calculator(object):
                                           text="History\nclear", font=("Helvetica", 12), command=self.clear_history)
         self.button_clearHistory.grid(row=6, column=3, sticky=W)
         self.button_showHistory = Button(width=9, height=2, bg=self.background_colour, fg=self.font_colour,
-                                          text="Show/Hide \nhistory", font=("Helvetica", 12), command=self.show_history)
+                                         text="Show/Hide \nhistory", font=("Helvetica", 12), command=self.show_history)
         self.button_showHistory.grid(row=6, column=4, sticky=W)
 
         self.checkbox["bg"] = self.background_colour
@@ -193,7 +193,7 @@ class Calculator(object):
 
     def show_history(self):
         self.is_history_showed = not self.is_history_showed
-        if not self.is_history_showed:
+        if self.is_history_showed:
             self.window.geometry("800x395")
         else:
             self.window.geometry("465x395")
