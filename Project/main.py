@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 
-# TODO: po klikniędciu równa się żeby ostatnie działanie dawało
+# TODO: po kliknięciu równa się żeby ostatnie działanie dawało ???
 # TODO: i żeby można było pobierać działania z historii
 
 
@@ -42,29 +42,29 @@ class Calculator(object):
                               bg=self.background_colour, fg=self.font_colour)
         self.entry_box.grid(row=0, rowspan=2, column=0, columnspan=5, sticky=W)
 
-        self.button_1 = self.make_button("1", 2, 0, lambda x="1": self.character_button_click(x))
-        self.button_2 = self.make_button("2", 2, 1, lambda x="2": self.character_button_click(x))
-        self.button_3 = self.make_button("3", 2, 2, lambda x="3": self.character_button_click(x))
-        self.button_delete = self.make_button("D", 2, 3, self.delete_button_click)
-        self.button_clear = self.make_button("C", 2, 4, self.clear_button_click)
+        self.make_button("1", 2, 0, lambda x="1": self.character_button_click(x))
+        self.make_button("2", 2, 1, lambda x="2": self.character_button_click(x))
+        self.make_button("3", 2, 2, lambda x="3": self.character_button_click(x))
+        self.make_button("D", 2, 3, self.delete_button_click)
+        self.make_button("C", 2, 4, self.clear_button_click)
 
-        self.button_4 = self.make_button("4", 3, 0, lambda x="4": self.character_button_click(x))
-        self.button_5 = self.make_button("5", 3, 1, lambda x="5": self.character_button_click(x))
-        self.button_6 = self.make_button("6", 3, 2, lambda x="6": self.character_button_click(x))
-        self.button_plus = self.make_button("+", 3, 3, lambda x="+": self.character_button_click(x))
-        self.button_minus = self.make_button("-", 3, 4, lambda x="-": self.character_button_click(x))
+        self.make_button("4", 3, 0, lambda x="4": self.character_button_click(x))
+        self.make_button("5", 3, 1, lambda x="5": self.character_button_click(x))
+        self.make_button("6", 3, 2, lambda x="6": self.character_button_click(x))
+        self.make_button("+", 3, 3, lambda x="+": self.character_button_click(x))
+        self.make_button("-", 3, 4, lambda x="-": self.character_button_click(x))
 
-        self.button_7 = self.make_button("7", 4, 0, lambda x="7": self.character_button_click(x))
-        self.button_8 = self.make_button("8", 4, 1, lambda x="8": self.character_button_click(x))
-        self.button_9 = self.make_button("9", 4, 2, lambda x="9": self.character_button_click(x))
-        self.button_multiplication = self.make_button("*", 4, 3, lambda x="*": self.character_button_click(x))
-        self.button_division = self.make_button("/", 4, 4, lambda x="/": self.character_button_click(x))
+        self.make_button("7", 4, 0, lambda x="7": self.character_button_click(x))
+        self.make_button("8", 4, 1, lambda x="8": self.character_button_click(x))
+        self.make_button("9", 4, 2, lambda x="9": self.character_button_click(x))
+        self.make_button("*", 4, 3, lambda x="*": self.character_button_click(x))
+        self.make_button("/", 4, 4, lambda x="/": self.character_button_click(x))
 
-        self.button_comma = self.make_button(".", 5, 0, lambda x=".": self.character_button_click(x))
-        self.button_zero = self.make_button("0", 5, 1, lambda x="0": self.character_button_click(x))
-        self.button_equation = self.make_button("=", 5, 2, self.equation_button_click)
-        self.button_bracket_left = self.make_button("(", 5, 3, lambda x="(": self.character_button_click(x))
-        self.button_bracket_right = self.make_button(")", 5, 4, lambda x=")": self.character_button_click(x))
+        self.make_button(".", 5, 0, lambda x=".": self.character_button_click(x))
+        self.make_button("0", 5, 1, lambda x="0": self.character_button_click(x))
+        self.make_button("=", 5, 2, self.equation_button_click)
+        self.make_button("(", 5, 3, lambda x="(": self.character_button_click(x))
+        self.make_button(")", 5, 4, lambda x=")": self.character_button_click(x))
 
         self.button_clearHistory = Button(width=9, height=2, bg=self.background_colour, fg=self.font_colour,
                                           text="History\nclear", font=("Helvetica", 12), command=self.clear_history)
@@ -113,11 +113,6 @@ class Calculator(object):
 
     def equation_button_click(self):
         try:
-            if self.is_last_button_equality:
-                self.expression = self.previous_expression
-            else:
-                self.previous_expression = self.expression
-
             self.equation = eval(self.expression)
             if str(self.equation) == "()":
                 raise SyntaxError
