@@ -202,8 +202,9 @@ class Calculator(object):
             return
         self.equation_button_click()
 
+
 def main():
-    Calc = Calculator()
+    calc = Calculator()
 
 
 main()
