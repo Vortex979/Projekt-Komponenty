@@ -14,7 +14,7 @@ class Calculator(object):
         self.font_colour = "black"
 
         self.window = Tk()
-        self.window.geometry("1360x600")
+        self.window.geometry("1360x600")  # Zablokowwać okno
         self.window.title("Kalkulator")
 
         self.expression = ""
@@ -22,6 +22,7 @@ class Calculator(object):
         self.equation = ""
         self.checkbox_value = tkinter.BooleanVar()
         self.checkbox_value.set(False)
+        self.is_first = True
 
         self.checkbox = Checkbutton(text="Bright/Dark mode", font=("Helvetica", 20), variable=self.checkbox_value)  # ogarnąć czemu się nie zaznacza
         self.window_setup()
@@ -73,14 +74,19 @@ class Calculator(object):
 
     def character_button_click(self, text):
         try:
-            if len(self.expression) == 25:
+            if len(self.expression) == 26:
                 raise TooLongExpressionException
+            if self.is_first and str(self.equation) != "" and "+-*/".__contains__(text):
+                self.expression += str(self.equation)
+                self.is_first = False
+            else:
+                self.is_first = False
             self.expression += text
             self.modify_entry_box(self.expression)
         except TooLongExpressionException:
             message_box = messagebox.showwarning("Błąd", "Twoje równanie jest za długie!")
         # except:
-        #     message_box = messagebox.showerror("Błąd", "Twoje równanie jest za długie!")
+        #     message_box = messagebox.showerror("Błąd", "Błąd")
 
     def equation_button_click(self):
         try:
@@ -102,6 +108,7 @@ class Calculator(object):
         #     self.equation_error_message_box("Błąd.")
         finally:
             self.expression = ""
+            self.is_first = True
 
     def delete_button_click(self):
         self.expression = self.expression[:-1]
@@ -109,6 +116,7 @@ class Calculator(object):
 
     def clear_button_click(self):
         self.expression = ""
+        self.equation = ""
         self.modify_entry_box(self.expression)
 
     def modify_entry_box(self, text):
@@ -130,7 +138,10 @@ class Calculator(object):
         else:
             self.background_colour = "white"
             self.font_colour = "black"
+
+        entry_box_copy = self.entry_box.get(0.0, "end")
         self.window_setup()
+        self.modify_entry_box(entry_box_copy)
 
 
 def main():
