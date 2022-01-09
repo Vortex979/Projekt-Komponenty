@@ -1,9 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
 
-# TODO: po kliknięciu równa się żeby ostatnie działanie dawało ??? - ciężka sprawa
-# TODO: i żeby można było pobierać działania z historii - done :D
-
 
 class TooLongExpressionException(Exception):
     pass
@@ -18,7 +15,7 @@ class Calculator(object):
         self.window = Tk()
         self.window.geometry("465x395")
         self.window.resizable(0, 0)
-        self.window.title("Kalkulator")
+        self.window.title("WZIM Calculator")
 
         self.expression = ""
         self.previous_expression = ""
@@ -30,8 +27,9 @@ class Calculator(object):
         self.history_length = 0
         self.is_history_showed = False
         self.is_last_button_equality = False
+        self.last_operator = ""
+        self.is_dot_available = True
 
-        self.checkbox = Checkbutton(text="Bright/\nDark mode", font=("Helvetica", 8), variable=self.checkbox_value)  # ogarnąć czemu się nie zaznacza
         self.window_setup()
         mainloop()
 
@@ -66,10 +64,14 @@ class Calculator(object):
         self.make_button("(", 5, 3, lambda x="(": self.character_button_click(x))
         self.make_button(")", 5, 4, lambda x=")": self.character_button_click(x))
 
+        self.checkbox = Checkbutton( justify=RIGHT, font=("Helvetica", 8), variable=self.checkbox_value)
         self.checkbox["bg"] = self.background_colour
-        self.checkbox["fg"] = self.font_colour
         self.checkbox["command"] = self.style_change
-        self.checkbox.grid(row=6, column=0, sticky=W)
+        self.checkbox.grid(row=6, column=1, sticky=W)
+
+        self.label2 = Label(text="Bright/\nDark mode", font=("Helvetica", 10),
+                            bg=self.background_colour, fg=self.font_colour)
+        self.label2.grid(row=6, column=0, sticky=W)
 
         self.button_clearHistory = Button(width=9, height=2, bg=self.background_colour, fg=self.font_colour,
                                           text="Clear\nhistory", font=("Helvetica", 12), command=self.clear_history)
@@ -80,7 +82,6 @@ class Calculator(object):
         self.button_insert_History = Button(width=9, height=2, bg=self.background_colour, fg=self.font_colour,
                                             text="Insert\nfrom history", font=("Helvetica", 12), command=self.insert_history)
         self.button_insert_History.grid(row=6, column=2, sticky=W)
-
 
         self.label1 = Label(text="Operations history: ", font=("Helvetica", 16),
                             bg=self.background_colour, fg=self.font_colour)
@@ -98,17 +99,33 @@ class Calculator(object):
         button = Button(width=5, height=1, bg=self.background_colour, fg=self.font_colour,
                         text=button_text, font=("Helvetica", 20), command=button_action)
         button.grid(row=button_row, column=button_column, sticky=W)
-        # return button_action  # to raczej nie jest potrzebne
 
-    def character_button_click(self, text):  # po kliknięciu = a potem znaku np * można dalej dodawać litery powyżej 20 znaków
+    def character_button_click(self, text):
         try:
+            if "+-*/".__contains__(text):
+                self.is_dot_available = True
+
+            if len(self.expression) > 0:
+                if "+-*/.".__contains__(self.expression[-1]) and "+-*/.".__contains__(text):
+                    return
+                if text == "." and not self.is_dot_available:
+                    return
+
+            if len(self.expression) == 0 and text == ".":
+                return
+
+            if text == ".":
+                self.is_dot_available = False
+
             if len(self.expression) == 20:
                 raise TooLongExpressionException
+
             if self.is_first_character and str(self.equation) != "" and "+-*/".__contains__(text):
                 self.expression += str(self.equation)
                 self.is_first_character = False
             else:
                 self.is_first_character = False
+
             self.expression += text
             self.modify_entry_box(self.expression)
             self.is_last_button_equality = False
@@ -117,6 +134,9 @@ class Calculator(object):
 
     def equation_button_click(self):
         try:
+            if len(self.expression) > 0 and self.expression[-1] == ".":
+                self.delete_button_click()
+
             self.equation = eval(self.expression)
             if str(self.equation) == "()":
                 raise SyntaxError
@@ -133,10 +153,10 @@ class Calculator(object):
             self.equation_error_message_box("Źle podane równanie, lub jego brak.")
         except ZeroDivisionError:
             self.equation_error_message_box("Dzielenie przez zero nie jest dozwolone.")
-        else:
+        finally:
             self.is_last_button_equality = True
             self.is_first_character = True
-        finally:
+            self.is_dot_available = True
             self.expression = ""
 
     def delete_button_click(self):
@@ -160,7 +180,7 @@ class Calculator(object):
         self.entry_box["state"] = "disabled"
         message_box = messagebox.showerror("Błąd", message)
 
-    def style_change(self):  # ogarnąć czemu się nie zaznacza
+    def style_change(self):
         if self.checkbox_value.get():
             self.background_colour = "#36393e"  # tryb ciemny
             self.font_colour = "white"
@@ -202,8 +222,9 @@ class Calculator(object):
             return
         self.equation_button_click()
 
+
 def main():
-    Calc = Calculator()
+    calc = Calculator()
 
 
 main()
