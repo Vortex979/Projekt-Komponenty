@@ -64,11 +64,14 @@ class Calculator(object):
         self.make_button("(", 5, 3, lambda x="(": self.character_button_click(x))
         self.make_button(")", 5, 4, lambda x=")": self.character_button_click(x))
 
-        self.checkbox = Checkbutton(text="Bright/\nDark mode", font=("Helvetica", 8), variable=self.checkbox_value)  # ogarnąć czemu się nie zaznacza
+        self.checkbox = Checkbutton( justify=RIGHT, font=("Helvetica", 8), variable=self.checkbox_value)
         self.checkbox["bg"] = self.background_colour
-        self.checkbox["fg"] = self.font_colour
         self.checkbox["command"] = self.style_change
-        self.checkbox.grid(row=6, column=0, sticky=W)
+        self.checkbox.grid(row=6, column=1, sticky=W)
+
+        self.label2 = Label(text="Bright/\nDark mode", font=("Helvetica", 10),
+                            bg=self.background_colour, fg=self.font_colour)
+        self.label2.grid(row=6, column=0, sticky=W)
 
         self.button_clearHistory = Button(width=9, height=2, bg=self.background_colour, fg=self.font_colour,
                                           text="Clear\nhistory", font=("Helvetica", 12), command=self.clear_history)
@@ -177,7 +180,7 @@ class Calculator(object):
         self.entry_box["state"] = "disabled"
         message_box = messagebox.showerror("Błąd", message)
 
-    def style_change(self):  # ogarnąć czemu się nie zaznacza
+    def style_change(self):
         if self.checkbox_value.get():
             self.background_colour = "#36393e"  # tryb ciemny
             self.font_colour = "white"
