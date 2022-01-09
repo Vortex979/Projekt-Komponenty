@@ -27,6 +27,8 @@ class Calculator(object):
         self.history_length = 0
         self.is_history_showed = False
         self.is_last_button_equality = False
+        self.last_operator = ""
+        self.is_dot_available = True
 
         self.window_setup()
         mainloop()
@@ -97,12 +99,20 @@ class Calculator(object):
 
     def character_button_click(self, text):
         try:
+            if "+-*/".__contains__(text):
+                self.is_dot_available = True
+
             if len(self.expression) > 0:
                 if "+-*/.".__contains__(self.expression[-1]) and "+-*/.".__contains__(text):
+                    return
+                if text == "." and not self.is_dot_available:
                     return
 
             if len(self.expression) == 0 and text == ".":
                 return
+
+            if text == ".":
+                self.is_dot_available = False
 
             if len(self.expression) == 20:
                 raise TooLongExpressionException
@@ -121,6 +131,9 @@ class Calculator(object):
 
     def equation_button_click(self):
         try:
+            if len(self.expression) > 0 and self.expression[-1] == ".":
+                self.delete_button_click()
+
             self.equation = eval(self.expression)
             if str(self.equation) == "()":
                 raise SyntaxError
@@ -137,10 +150,10 @@ class Calculator(object):
             self.equation_error_message_box("Źle podane równanie, lub jego brak.")
         except ZeroDivisionError:
             self.equation_error_message_box("Dzielenie przez zero nie jest dozwolone.")
-        else:
+        finally:
             self.is_last_button_equality = True
             self.is_first_character = True
-        finally:
+            self.is_dot_available = True
             self.expression = ""
 
     def delete_button_click(self):
