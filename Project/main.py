@@ -15,7 +15,7 @@ class Calculator(object):
         self.window = Tk()
         self.window.geometry("465x395")
         self.window.resizable(0, 0)
-        self.window.title("WZIM Calculator")
+        self.window.title("WZiM Calculator")
 
         self.expression = ""
         self.previous_expression = ""
@@ -24,10 +24,9 @@ class Calculator(object):
         self.checkbox_value.set(False)
         self.history = []
         self.history_length = 0
+        self.is_history_showed = False
 
         self.is_first_character = True
-        self.is_history_showed = False
-        self.is_last_button_equality = False
         self.is_dot_available = True
 
         self.window_setup()
@@ -91,7 +90,7 @@ class Calculator(object):
                                        fg=self.font_colour, font=("Helvetica", 20), selectmode=SINGLE)
         self.history_listbox.grid(row=1, rowspan=5, column=6, columnspan=5, sticky=W)
 
-        self.history_scroll_Y = Scale(length=270, sliderlength=50, showvalue=0)
+        self.history_scroll_Y = Scale(length=270, sliderlength=50, showvalue=False)
         self.history_scroll_Y.grid(row=1, rowspan=5, column=11, columnspan=5, sticky=W)
         self.history_scroll_Y.config(command=self.history_listbox.yview)
 
@@ -134,7 +133,6 @@ class Calculator(object):
 
             self.expression += text
             self.modify_entry_box(self.expression)
-            self.is_last_button_equality = False
         except TooLongExpressionException:
             message_box = messagebox.showwarning("Błąd", "Twoje równanie jest za długie!")
 
@@ -160,12 +158,14 @@ class Calculator(object):
         except ZeroDivisionError:
             self.equation_error_message_box("Dzielenie przez zero nie jest dozwolone.")
         finally:
-            self.is_last_button_equality = True
             self.is_first_character = True
             self.is_dot_available = True
             self.expression = ""
 
     def delete_button_click(self):
+        if len(self.expression) > 0 and "+-*/.".__contains__(self.expression[-1]):
+            self.is_dot_available = not self.is_dot_available
+
         self.expression = self.expression[:-1]
         self.modify_entry_box(self.expression)
 
@@ -176,7 +176,6 @@ class Calculator(object):
 
         self.is_first_character = True
         self.is_history_showed = False
-        self.is_last_button_equality = False
         self.is_dot_available = True
 
     def modify_entry_box(self, text):
