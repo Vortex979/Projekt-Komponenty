@@ -22,12 +22,12 @@ class Calculator(object):
         self.equation = ""
         self.checkbox_value = BooleanVar()
         self.checkbox_value.set(False)
-        self.is_first_character = True
         self.history = []
         self.history_length = 0
+
+        self.is_first_character = True
         self.is_history_showed = False
         self.is_last_button_equality = False
-        self.last_operator = ""
         self.is_dot_available = True
 
         self.window_setup()
@@ -117,6 +117,12 @@ class Calculator(object):
             if text == ".":
                 self.is_dot_available = False
 
+            if len(self.expression) == 1 and self.expression[-1] == "0" and not "+-*/.".__contains__(text):
+                return
+
+            if len(self.expression) >= 2 and self.expression[-1] == "0" and "+-*/".__contains__(self.expression[-2]) and not "+-*/.".__contains__(text):
+                return
+
             if len(self.expression) == 20:
                 raise TooLongExpressionException
 
@@ -167,6 +173,11 @@ class Calculator(object):
         self.expression = ""
         self.equation = ""
         self.modify_entry_box(self.expression)
+
+        self.is_first_character = True
+        self.is_history_showed = False
+        self.is_last_button_equality = False
+        self.is_dot_available = True
 
     def modify_entry_box(self, text):
         self.entry_box["state"] = "normal"
